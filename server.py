@@ -6,6 +6,8 @@ from googleapiclient.discovery import build
 import os
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+
 
 # Escopos de permissão (leitura e escrita no calendário)
 SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -96,6 +98,8 @@ def get_free_slots(service, calendar_id, start_time, end_time, interval_minutes=
         "timeZone": "America/Sao_Paulo",
         "items": [{"id": calendar_id}]
     }
+    print(body)
+
     busy_slots = service.freebusy().query(body=body).execute()
 
     # Obter os períodos ocupados
@@ -159,13 +163,15 @@ def main():
 # Criando o aplicativo Flask
 app = Flask(__name__)
 
+CORS(app)
+
 @app.route('/create_event', methods=['POST'])
 def create_new_event():
     # Parâmetros recebidos na requisição POST (exemplo de criação de evento)
     data = request.json
     calendar_id = 'joao.rossi.figueiredo@gmail.com'
-    start_time = data.get('start_time')
-    end_time = data.get('end_time')
+    start_time = data.get('start_time') + ':00-03:00'
+    end_time = data.get('end_time') + ':00-03:00'
     summary = data.get('summary', 'New Event')
     description = data.get('description', 'Event created via API')
 
