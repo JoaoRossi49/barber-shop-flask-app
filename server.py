@@ -8,6 +8,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from agendas import agendas_disponiveis
 
 # Escopos de permissão (leitura e escrita no calendário)
 SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -130,36 +131,6 @@ def get_free_slots(service, calendar_id, start_time, end_time, interval_minutes=
 
     return available_slots
 
-# Exemplo de uso
-def main():
-    # Autenticação e inicialização do serviço
-    creds = authenticate_google_api()
-    service = build('calendar', 'v3', credentials=creds)
-
-    # Dados do evento
-    calendar_id = 'joao.rossi.figueiredo@gmail.com'  # Use o ID do calendário desejado
-    summary = "Reunião de Projeto 2"
-    description = "Discussão sobre o andamento do projeto."
-    start_time = "2024-12-12T08:00:00-03:00"  # ISO 8601
-    end_time = "2024-12-12T09:00:00-03:00"    # ISO 8601
-
-    free_slots = get_free_slots(service, calendar_id, start_time, end_time)
-    print('Espaços disponíveis: ', free_slots)
-
-    # Criar evento no primeiro slot disponível
-    if free_slots:
-        first_slot_start, first_slot_end = free_slots[0]
-        create_event(
-            service=service,
-            calendar_id=calendar_id,
-            summary=summary,
-            description=description,
-            start_time=start_time,
-            end_time=end_time
-        )
-    else:
-        print("Nenhum slot disponível.")
-
 # Criando o aplicativo Flask
 app = Flask(__name__)
 
@@ -167,9 +138,8 @@ CORS(app)
 
 @app.route('/create_event', methods=['POST'])
 def create_new_event():
-    # Parâmetros recebidos na requisição POST (exemplo de criação de evento)
     data = request.json
-    calendar_id = 'joao.rossi.figueiredo@gmail.com'
+    calendar_id = agendas_disponiveis[0][0]
     start_time = data.get('start_time') + ':00-03:00'
     end_time = data.get('end_time') + ':00-03:00'
     summary = data.get('summary', 'New Event')
