@@ -4,10 +4,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import os
-
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-
 from agendas import agendas_disponiveis
 
 # Escopos de permissão (leitura e escrita no calendário)
@@ -135,6 +133,11 @@ def get_free_slots(service, calendar_id, start_time, end_time, interval_minutes=
 app = Flask(__name__)
 
 CORS(app)
+
+@app.route('/', methods=['GET'])
+def hello_world():
+    return render_template('index.html')
+
 
 @app.route('/create_event', methods=['POST'])
 def create_new_event():
