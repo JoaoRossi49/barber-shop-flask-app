@@ -6,7 +6,9 @@ from googleapiclient.discovery import build
 import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from agendas import agendas_disponiveis
+from agendas import avaliable_agendas
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Escopos de permissão (leitura e escrita no calendário)
 SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -43,6 +45,7 @@ def list_calendars(service):
     # Exibe o ID e o nome de cada calendário
     for calendar in calendars:
         print(f"Calendário: {calendar['summary']}, ID: {calendar['id']}")
+
 
 def create_event(service, calendar_id, summary, description, start_time, end_time, timezone="America/Sao_Paulo"):
     """
@@ -132,17 +135,37 @@ def get_free_slots(service, calendar_id, start_time, end_time, interval_minutes=
 # Criando o aplicativo Flask
 app = Flask(__name__)
 
+limiter = Limiter(get_remote_address, app=app, default_limits=["5 per minute"])
+
 CORS(app)
 
 @app.route('/', methods=['GET'])
 def hello_world():
     return render_template('index.html')
 
+@app.route('/agendas', methods=['GET'])
+def get_agendas():
+    agendas = [{'id': t[0], 'nome': t[1]} for t in avaliable_agendas]
+    
+    return jsonify(agendas)
 
-@app.route('/create_event', methods=['POST'])
+@app.route('/freeSlots', methods=['POST'])
+def free_slots():
+    data = request.json
+    calendar_id = avaliable_agendas[0][0]
+    start_time = data.get('start_time') + ':00-03:00'
+    end_time = data.get('end_time') + ':00-03:00'
+
+    service = build('calendar', 'v3', credentials=creds)
+    free_slots = get_free_slots(service, calendar_id, start_time, end_time)
+
+    return free_slots
+
+@app.route('/createEvent', methods=['POST'])
+@limiter.limit("1 per hour") 
 def create_new_event():
     data = request.json
-    calendar_id = agendas_disponiveis[0][0]
+    calendar_id = avaliable_agendas[0][0]
     start_time = data.get('start_time') + ':00-03:00'
     end_time = data.get('end_time') + ':00-03:00'
     summary = data.get('summary', 'New Event')
