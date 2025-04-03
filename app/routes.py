@@ -8,17 +8,17 @@ from googleapiclient.discovery import build
 limiter = Limiter(get_remote_address)
 
 def register_routes(app):
-    @app.route('/', methods=['GET'])
+    @app.route('/api', methods=['GET'])
     def hello_world():
         return render_template('index.html')
 
-    @app.route('/agendas', methods=['GET'])
+    @app.route('/api/agendas', methods=['GET'])
     def get_agendas():
         agendas = [{'id': t[0], 'nome': t[1], 'avatar:': url_for('static', filename=f'images/{t[2]}', _external=True)} for t in avaliable_agendas]
         
         return jsonify(agendas)
 
-    @app.route('/freeSlots', methods=['POST'])
+    @app.route('/api/freeSlots', methods=['POST'])
     def free_slots():
         data = request.json
         calendar_id = data.get('calendar_id')
@@ -29,7 +29,7 @@ def register_routes(app):
 
         return jsonify(free_slots)
 
-    @app.route('/createEvent', methods=['POST'])
+    @app.route('/api/createEvent', methods=['POST'])
     @limiter.limit("1 per hour")
     def create_new_event():
         data = request.json
