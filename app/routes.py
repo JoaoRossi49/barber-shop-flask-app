@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 from .calendar import create_event, get_free_slots, convert_timezone
 from .config import avaliable_agendas
 from flask_limiter.util import get_remote_address
@@ -14,7 +14,7 @@ def register_routes(app):
 
     @app.route('/agendas', methods=['GET'])
     def get_agendas():
-        agendas = [{'id': t[0], 'nome': t[1]} for t in avaliable_agendas]
+        agendas = [{'id': t[0], 'nome': t[1], 'avatar:': url_for('static', filename=f'images/{t[2]}', _external=True)} for t in avaliable_agendas]
         
         return jsonify(agendas)
 

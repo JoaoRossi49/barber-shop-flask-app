@@ -1,1 +1,1 @@
-avaliable_agendas = [('8d01f0142acd6d77e73b098111c7c1a0decbe76e8a1e1c3e731629847659beba@group.calendar.google.com', 'Camargo')]
+avaliable_agendas = [('8d01f0142acd6d77e73b098111c7c1a0decbe76e8a1e1c3e731629847659beba@group.calendar.google.com', 'Camargo', 'camargo.jpeg')]

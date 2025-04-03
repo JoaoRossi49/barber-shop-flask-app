@@ -3,3 +3,54 @@ venv/
 
 # Ignorar todos os arquivos .json
 *.json
+
+# Arquivos e pastas do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+venv/
+ENV/
+env/
+instance/
+*.sqlite3
+*.db
+
+# Configurações do ambiente e credenciais sensíveis
+.env
+.env.local
+config.py
+instance/
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+
+# Dependências do Python
+pip-log.txt
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+
+# Arquivos do Flask
+*.pid
+*.lock
+
+# VSCode e IDEs
+.vscode/
+.idea/
+*.iml
+
+# Arquivos gerados por Docker
+docker-compose.override.yml
+
+# Arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
