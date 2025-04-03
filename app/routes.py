@@ -14,7 +14,7 @@ def register_routes(app):
 
     @app.route('/api/agendas', methods=['GET'])
     def get_agendas():
-        agendas = [{'id': t[0], 'nome': t[1], 'avatar:': url_for('static', filename=f'images/{t[2]}', _external=True)} for t in avaliable_agendas]
+        agendas = [{'id': t[0], 'nome': t[1], 'avatar': url_for('static', filename=f'images/{t[2]}', _external=True)} for t in avaliable_agendas]
         
         return jsonify(agendas)
 
