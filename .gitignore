@@ -30,14 +30,14 @@ instance/
 *.swp
 *.swo
 *.bak
-*.orig
+*.ori
+*.rar
 
 # Dependências do Python
 pip-log.txt
 pip-wheel-metadata/
 *.egg-info/
 dist/
-build/
 
 # Arquivos do Flask
 *.pid
