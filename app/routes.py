@@ -1,20 +1,48 @@
 from flask import jsonify, request, url_for
 from .calendar import create_event, get_free_slots, convert_timezone
-from .config import avaliable_agendas
+from .config import get_shops
 from flask_limiter.util import get_remote_address
 from flask_limiter import Limiter
 from googleapiclient.discovery import build
+from app.classes import Barber, Shop
 
 limiter = Limiter(get_remote_address)
 
 def register_routes(app):
-    @app.route('/api', methods=['GET'])
-    def hello_world():
-        return render_template('index.html')
 
-    @app.route('/api/agendas', methods=['GET'])
-    def get_agendas():
-        agendas = [{'id': t[0], 'nome': t[1], 'avatar': url_for('static', filename=f'images/{t[2]}', _external=True)} for t in avaliable_agendas]
+    @app.route('/api/shops', methods=['GET'])
+    def get_all_shops():
+        shops = [
+            {
+                'id': id,
+                'name': shop.name
+            }
+            for id, shop in enumerate(get_shops())
+        ]
+
+        return jsonify(shops)
+
+    @app.route('/api/agendas/<int:shop_id>', methods=['GET'])
+    def get_agendas(shop_id):
+        shops = get_shops()
+        
+        shop = shops[shop_id]
+
+        agendas = [
+            {
+                'id': barber.agenda,
+                'nome': barber.name,
+                'avatar': url_for('static', filename=f'images/{barber.picture}', _external=True),
+                'services': [
+                    {
+                        'description': service.description,
+                        'timeInMinutes': service.time_in_minutes
+                    }
+                    for service in barber.get_services()
+                ]
+            }
+            for barber in shop.get_barbers()
+        ]
         
         return jsonify(agendas)
 
@@ -33,7 +61,7 @@ def register_routes(app):
     @limiter.limit("1 per hour")
     def create_new_event():
         data = request.json
-        calendar_id = data.get('calendar_id')
+        calendar_id = data.get('calendar_id') 
         start_time = data.get('start_time') + ':00-03:00'
         end_time = data.get('end_time') + ':00-03:00'
         summary = data.get('summary', 'New Event')
