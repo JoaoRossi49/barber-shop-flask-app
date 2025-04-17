@@ -15,7 +15,8 @@ def register_routes(app):
         shops = [
             {
                 'id': id,
-                'name': shop.name
+                'name': shop.name,
+                'url': shop.url
             }
             for id, shop in enumerate(get_shops())
         ]
