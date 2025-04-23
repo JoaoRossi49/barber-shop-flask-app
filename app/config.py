@@ -3,7 +3,7 @@ def get_shops():
     all_shops = []
 
     #Definição do barbeiro
-    camargo = Barber(name='Camargo', agenda='8d01f0142acd6d77e73b098111c7c1a0decbe76e8a1e1c3e731629847659beba@group.calendar.google.com', picture='camargo.jpeg')
+    camargo = Barber(name='Camargo', email='joao.rossi.figueiredo@gmail.com', agenda='8d01f0142acd6d77e73b098111c7c1a0decbe76e8a1e1c3e731629847659beba@group.calendar.google.com', picture='camargo.jpeg')
 
     #Definição de serviços
     camargo.add_service(Service(description='Corte de cabelo masculino', time_in_minutes=30))
@@ -37,3 +37,15 @@ def get_shops():
     all_shops.append(teste_shop)
 
     return all_shops
+
+def get_barber_by_calendar_id(calendar_id):
+    shops = get_shops()
+
+    barbers = []
+    
+    for shop in shops:
+        for barber in shop.barbers:
+            if barber.agenda == calendar_id:
+                barbers.append(barber)
+    
+    return barbers

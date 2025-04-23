@@ -4,8 +4,9 @@ class Service:
         self.time_in_minutes = time_in_minutes
 
 class Barber:
-    def __init__(self, name, agenda, picture):
+    def __init__(self, name, agenda, picture, email=None):
         self.name = name
+        self.email = email
         self.agenda = agenda
         self.picture = picture
         self.services: list[Service] = []

@@ -1,10 +1,11 @@
 from flask import jsonify, request, url_for
 from .calendar import create_event, get_free_slots, convert_timezone
-from .config import get_shops
+from .config import get_shops, get_barber_by_calendar_id
 from flask_limiter.util import get_remote_address
 from flask_limiter import Limiter
 from googleapiclient.discovery import build
 from app.classes import Barber, Shop
+from .utils import send_email
 
 limiter = Limiter(get_remote_address)
 
@@ -67,6 +68,8 @@ def register_routes(app):
         summary = data.get('summary', 'New Event')
         description = data.get('description', 'Event created via API')
 
+        client = summary + ' -(' + description + ')'
+
         if not start_time or not end_time:
             return jsonify({"error": "start_time and end_time are required"}), 400
 
@@ -74,6 +77,13 @@ def register_routes(app):
 
         if free_slots:
             create_event(calendar_id, summary, description, start_time, end_time)
+            #Envia e-mail de notificação
+            barbers = get_barber_by_calendar_id(calendar_id)
+
+            for barber in barbers:
+                if barber.email:
+                    send_email(client,barber.name, barber.email)
+
             return jsonify({"message": "Event created successfully!"}), 201
         else:
             return jsonify({"message": "Event not created!"}), 400
