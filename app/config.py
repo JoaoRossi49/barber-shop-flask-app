@@ -10,7 +10,7 @@ def get_shops():
     camargo.add_service(Service(description='Barba', time_in_minutes=30))
     
     #O barbeiro Camargo faz parte da barbearia Camargo
-    camargo_shop = Shop('Camargo')
+    camargo_shop = Shop('Camargo', '/camargo')
     camargo_shop.add_barber(camargo)
 
     #Definição de todas as barbearias
@@ -29,7 +29,7 @@ def get_shops():
     teste2.add_service(Service(description='Corte simples', time_in_minutes=15))
     
     #O barbeiro Camargo faz parte da barbearia Camargo
-    teste_shop = Shop ('Barbearia Teste')
+    teste_shop = Shop ('Barbearia Teste', '/barbearia-teste')
     teste_shop.add_barber(teste)
     teste_shop.add_barber(teste2)
 

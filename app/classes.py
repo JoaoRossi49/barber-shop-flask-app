@@ -18,8 +18,9 @@ class Barber:
         return self.services
 
 class Shop:
-    def __init__(self, name):
+    def __init__(self, name, url):
         self.name = name
+        self.url = url
         self.barbers: list[Barber] = []
 
     def add_barber(self, barber: Barber):
