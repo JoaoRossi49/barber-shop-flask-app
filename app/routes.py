@@ -83,8 +83,11 @@ def register_routes(app):
             if dia_semana in dias_permitidos:
                 hora_inicio = dias_permitidos[dia_semana]['start']
                 hora_fim = dias_permitidos[dia_semana]['end']
+                #print(f"Hoje é {dia_semana} e o barbeiro trabalha das", hora_inicio, "às", hora_fim)
+                #print("Slot:", start_dt.time(), "→", end_dt.time())
 
-                if hora_inicio <= start_dt.time() <= hora_fim:
+                if hora_inicio <= start_dt.time() < hora_fim:
+                    #print('Considerado\n\n\n')
                     slots_filtrados.append(slot)
 
         return jsonify(slots_filtrados)
