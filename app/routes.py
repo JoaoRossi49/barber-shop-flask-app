@@ -6,6 +6,7 @@ from flask_limiter import Limiter
 from googleapiclient.discovery import build
 from app.classes import Barber, Shop
 from .utils import send_email
+from dateutil import parser
 
 limiter = Limiter(get_remote_address)
 
@@ -69,7 +70,12 @@ def register_routes(app):
         summary = data.get('summary', 'New Event')
         description = data.get('description', 'Event created via API')
 
-        client = summary + ' -(' + description + ')'
+        #Formatar datas
+        day = parser.parse(start_time).strftime('%d/%m')
+        start_time_f = parser.parse(start_time).strftime('%H:%M')
+        end_time_f = parser.parse(end_time).strftime('%H:%M')
+
+        client = summary + ' -(' + description + ')' + f' no dia {day} - {start_time_f} até {end_time_f}'
 
         if not start_time or not end_time:
             return jsonify({"error": "start_time and end_time are required"}), 400
