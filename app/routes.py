@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from app.classes import Barber, Shop
 from .utils import send_email
 from dateutil import parser
+from datetime import datetime, time
 
 limiter = Limiter(get_remote_address)
 
@@ -58,7 +59,38 @@ def register_routes(app):
 
         free_slots = convert_timezone(get_free_slots(calendar_id, start_time, end_time))
 
-        return jsonify(free_slots)
+        barbers = get_barber_by_calendar_id(calendar_id)
+        workdays = barbers[0].get_workDays()
+
+        dias_permitidos = {}
+        for dia in workdays:
+            dias_permitidos[dia.day] = {
+                'start': dia.start_time,
+                'end': dia.end_time
+            }
+
+        slots_filtrados = []
+
+        for slot in free_slots:
+            try:
+                start_dt = datetime.strptime(slot[0], '%a, %d %b %Y %H:%M:%S %Z')
+                end_dt = datetime.strptime(slot[1], '%a, %d %b %Y %H:%M:%S %Z')
+            except ValueError:
+                continue
+
+            dia_semana = start_dt.strftime('%A')
+
+            if dia_semana in dias_permitidos:
+                hora_inicio = dias_permitidos[dia_semana]['start']
+                hora_fim = dias_permitidos[dia_semana]['end']
+                #print(f"Hoje é {dia_semana} e o barbeiro trabalha das", hora_inicio, "às", hora_fim)
+                #print("Slot:", start_dt.time(), "→", end_dt.time())
+
+                if hora_inicio <= start_dt.time() < hora_fim:
+                    #print('Considerado\n\n\n')
+                    slots_filtrados.append(slot)
+
+        return jsonify(slots_filtrados)
 
     @app.route('/api/createEvent', methods=['POST'])
     @limiter.limit("1 per hour")
