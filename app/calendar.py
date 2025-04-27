@@ -35,7 +35,7 @@ def create_event(calendar_id, summary, description, start_time, end_time, timezo
     created_event = service.events().insert(calendarId=calendar_id, body=event).execute()
     return created_event
 
-def get_free_slots(calendar_id, start_time, end_time, interval_minutes=30):
+def get_free_slots(calendar_id, start_time, end_time, interval_minutes=10):
 
     creds = authenticate_google_api()
     service = build('calendar', 'v3', credentials=creds)
