@@ -13,9 +13,10 @@ def get_shops():
 
     #Definição de serviços
     camargo.add_service(Service(description='Corte', time_in_minutes=30))
-    camargo.add_service(Service(description='Corte navalhado', time_in_minutes=45))
-    camargo.add_service(Service(description='Corte + Barba', time_in_minutes=60))
-    camargo.add_service(Service(description='Barba', time_in_minutes=30))
+    camargo.add_service(Service(description='Corte & Barba', time_in_minutes=60))
+    camargo.add_service(Service(description='Corte navalhado', time_in_minutes=40))
+    camargo.add_service(Service(description='Corte navalhado & Barba', time_in_minutes=60))
+    camargo.add_service(Service(description='Aparar barba', time_in_minutes=25))
 
     
 
