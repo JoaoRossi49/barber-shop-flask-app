@@ -12,8 +12,12 @@ def get_shops():
     picture='camargo.jpeg')
 
     #Definição de serviços
-    camargo.add_service(Service(description='Corte de cabelo masculino', time_in_minutes=30))
+    camargo.add_service(Service(description='Corte', time_in_minutes=30))
+    camargo.add_service(Service(description='Corte navalhado', time_in_minutes=45))
+    camargo.add_service(Service(description='Corte + Barba', time_in_minutes=60))
     camargo.add_service(Service(description='Barba', time_in_minutes=30))
+
+    
 
     #Definição de dias de trabalho
     camargo.add_workDays(WorkDay(day='Monday', start_time=time(9, 0), end_time=time(20, 0)))
