@@ -107,12 +107,17 @@ def register_routes(app):
         start_time_f = parser.parse(start_time).strftime('%H:%M')
         end_time_f = parser.parse(end_time).strftime('%H:%M')
 
+        #Descobrir intervalo
+        start_dt = parser.parse(start_time)
+        end_dt = parser.parse(end_time)
+        diff_minutes = int((end_dt - start_dt).total_seconds() / 60)
+
         client = summary + ' -(' + description + ')' + f' no dia {day} - {start_time_f} até {end_time_f}'
 
         if not start_time or not end_time:
             return jsonify({"error": "start_time and end_time are required"}), 400
 
-        free_slots = get_free_slots(calendar_id, start_time, end_time)
+        free_slots = get_free_slots(calendar_id, start_time, end_time, interval_minutes=diff_minutes)
 
         if free_slots:
             create_event(calendar_id, summary, description, start_time, end_time)
