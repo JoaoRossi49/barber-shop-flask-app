@@ -61,11 +61,13 @@ def get_free_slots(calendar_id, start_time, end_time, interval_minutes=10):
 
     while current_time + datetime.timedelta(minutes=interval_minutes) <= datetime.datetime.fromisoformat(end_time):
         slot_end = current_time + datetime.timedelta(minutes=interval_minutes)
-        is_free = all(not (start <= current_time < end or current_time < start < slot_end) for start, end in busy_intervals)
+        
+        is_free = all(
+            not (start < slot_end and current_time < end)
+            for start, end in busy_intervals
+        )
 
         if is_free:
             available_slots.append((current_time, slot_end))
-
-        current_time = slot_end
 
     return available_slots

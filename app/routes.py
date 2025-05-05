@@ -118,7 +118,7 @@ def register_routes(app):
             return jsonify({"error": "start_time and end_time are required"}), 400
 
         free_slots = get_free_slots(calendar_id, start_time, end_time, interval_minutes=diff_minutes)
-
+        
         if free_slots:
             create_event(calendar_id, summary, description, start_time, end_time)
             #Envia e-mail de notificação
